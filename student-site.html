@@ -1,0 +1,335 @@
+<!doctype html>
+<html lang="bn">
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width,initial-scale=1" />
+  <title>Student Site — আমার স্টুডেন্ট পেজ</title>
+  <style>
+    /* সিম্পল এবং পরিষ্কার স্টাইল */
+    :root {
+      --bg: #f7fbff;
+      --card: #ffffff;
+      --accent: #2b6cb0;
+      --muted: #6b7280;
+    }
+    * {box-sizing: border-box; font-family: "Segoe UI", Roboto, "Noto Sans Bengali", sans-serif;}
+    body {margin:0; background:var(--bg); color:#0f172a; padding:20px;}
+    .container {max-width:1000px; margin:0 auto; display:grid; grid-template-columns: 320px 1fr; gap:20px;}
+    header {grid-column:1/-1; display:flex; align-items:center; justify-content:space-between; gap:16px;}
+    h1 {margin:0; font-size:20px;}
+    .profile-card, .card {background:var(--card); border-radius:12px; padding:16px; box-shadow: 0 6px 18px rgba(11,22,40,0.06);}
+    .profile-card {text-align:center;}
+    .avatar {width:96px; height:96px; border-radius:50%; display:inline-block; background:linear-gradient(135deg,#70c0ff,#3977b6); color:white; font-size:40px; line-height:96px;}
+    .small {color:var(--muted); font-size:14px;}
+    .btn {background:var(--accent); color:white; padding:8px 12px; border-radius:8px; border:0; cursor:pointer;}
+    .btn.secondary {background:#edf2ff; color:var(--accent); border:1px solid rgba(43,108,176,0.12);}
+    .info {text-align:left; margin-top:12px;}
+    label {display:block; font-size:13px; margin-top:8px; color:var(--muted);}
+    input[type="text"], input[type="email"], textarea, select {
+      width:100%; padding:8px 10px; margin-top:6px; border-radius:8px; border:1px solid #e6eef9; background:#fbfeff;
+    }
+    nav ul {list-style:none; padding:0; margin:12px 0 0 0; display:grid; gap:8px;}
+    nav li {padding:8px; border-radius:8px; cursor:pointer; color:var(--accent);}
+    .content {display:grid; gap:16px;}
+    .courses {display:grid; grid-template-columns: repeat(auto-fit,minmax(220px,1fr)); gap:10px;}
+    .course {padding:10px; border-radius:10px; background:linear-gradient(180deg,#ffffff,#f2f8ff); border:1px solid #e6f0fb;}
+    .assignments-list {list-style:none; padding:0; margin:0; display:grid; gap:8px;}
+    .assignment {display:flex; justify-content:space-between; gap:8px; align-items:center; padding:8px; border-radius:8px; background:#fff; border:1px solid #eef6ff;}
+    .done {text-decoration:line-through; opacity:0.6;}
+    footer {grid-column:1/-1; text-align:center; color:var(--muted); margin-top:16px;}
+    @media (max-width:880px){
+      .container {grid-template-columns:1fr; padding-bottom:40px;}
+      header {flex-direction:column; align-items:start; gap:8px;}
+    }
+  </style>
+</head>
+<body>
+  <div class="container">
+    <header>
+      <div>
+        <h1>আমার স্টুডেন্ট সাইট</h1>
+        <div class="small">একটি সিম্পল লালনীয় পেজ — কাস্টমাইজ করে ব্যবহার করো</div>
+      </div>
+      <div>
+        <button class="btn" id="editProfileBtn">প্রোফাইল সম্পাদনা</button>
+        <button class="btn secondary" id="clearDataBtn">স্থানীয় ডাটা ক্লিয়ার</button>
+      </div>
+    </header>
+
+    <!-- Sidebar: প্রোফাইল -->
+    <aside class="profile-card">
+      <div class="avatar" id="avatarInitial">A</div>
+      <h2 id="studentName">Student Name</h2>
+      <div class="small" id="studentClass">Class: ---</div>
+
+      <div class="info">
+        <label>ই-মেইল</label>
+        <div id="studentEmail" class="small">---</div>
+
+        <label>ছাত্র পরিচিতি</label>
+        <div id="studentBio" class="small">একটু সংক্ষেপে নিজের সম্পর্কে লিখো।</div>
+      </div>
+
+      <nav>
+        <ul>
+          <li onclick="document.getElementById('coursesSection').scrollIntoView();">কোর্সসমূহ</li>
+          <li onclick="document.getElementById('assignmentsSection').scrollIntoView();">অ্যাসাইনমেন্ট</li>
+          <li onclick="document.getElementById('contactSection').scrollIntoView();">যোগাযোগ</li>
+        </ul>
+      </nav>
+    </aside>
+
+    <!-- Main content -->
+    <main class="content">
+      <section class="card" id="coursesSection">
+        <h3>কোর্সসমূহ</h3>
+        <div class="courses" id="coursesContainer">
+          <!-- কিছু ডিফল্ট কোর্স -->
+          <div class="course">বাংলা</div>
+          <div class="course">ইংরেজি</div>
+          <div class="course">গণিত</div>
+          <div class="course">কম্পিউটার সায়েন্স</div>
+        </div>
+      </section>
+
+      <section class="card" id="assignmentsSection">
+        <h3>অ্যাসাইনমেন্ট ম্যানেজার</h3>
+
+        <div style="display:flex; gap:8px; flex-wrap:wrap;">
+          <input id="taskInput" type="text" placeholder="নতুন অ্যাসাইনমেন্ট লিখো (উদাহরণ: গণিত - চ্যাপ্টার ২)"/>
+          <select id="taskCourse">
+            <option value="সাধারণ">সাধারণ</option>
+            <option value="বাংলা">বাংলা</option>
+            <option value="ইংরেজি">ইংরেজি</option>
+            <option value="গণিত">গণিত</option>
+            <option value="কম্পিউটার সায়েন্স">কম্পিউটার সায়েন্স</option>
+          </select>
+          <button class="btn" id="addTaskBtn">যোগ করো</button>
+        </div>
+
+        <ul class="assignments-list" id="assignmentsList">
+          <!-- অ্যাসাইনমেন্ট দেখা যাবে এখানে -->
+        </ul>
+      </section>
+
+      <section class="card" id="contactSection">
+        <h3>যোগাযোগ</h3>
+        <form id="contactForm">
+          <label>তোমার নাম</label>
+          <input type="text" id="contactName" placeholder="তোমার নাম" required />
+          <label>ই-মেইল</label>
+          <input type="email" id="contactEmail" placeholder="ই-মেইল" required />
+          <label>বার্তা</label>
+          <textarea id="contactMessage" rows="4" placeholder="এখানে একটা বার্তা লিখো..." required></textarea>
+          <div style="margin-top:8px;">
+            <button class="btn" type="submit">পাঠাও</button>
+          </div>
+        </form>
+        <div id="contactResult" class="small" style="margin-top:8px;"></div>
+      </section>
+
+      <!-- প্রোফাইল সম্পাদনার মডাল (সরল) -->
+      <div id="profileModal" style="display:none; position:fixed; inset:0; background:rgba(2,6,23,0.5); align-items:center; justify-content:center;">
+        <div class="card" style="width:90%; max-width:520px;">
+          <h3>প্রোফাইল সম্পাদনা</h3>
+          <label>নাম</label>
+          <input type="text" id="editName" />
+          <label>ক্লাস/শ্রেণি</label>
+          <input type="text" id="editClass" />
+          <label>ই-মেইল</label>
+          <input type="email" id="editEmail" />
+          <label>ছাত্র সম্পর্কে (বায়ো)</label>
+          <textarea id="editBio" rows="3"></textarea>
+          <div style="margin-top:10px; display:flex; gap:8px; justify-content:flex-end;">
+            <button class="btn secondary" id="cancelEdit">বাতিল</button>
+            <button class="btn" id="saveEdit">সংরক্ষণ</button>
+          </div>
+        </div>
+      </div>
+
+      <footer>
+        © তোমার নাম — Student Site. LocalStorage এ সমস্ত ডাটা সেভ হয় (কোনো সার্ভার নয়)।
+      </footer>
+    </main>
+  </div>
+
+  <script>
+    // সোজা ব্যবহার-অর্থ: localStorage keys
+    const LS_PROFILE = 'student_site_profile_v1';
+    const LS_TASKS = 'student_site_tasks_v1';
+
+    // ডিফল্ট প্রোফাইল
+    const defaultProfile = {
+      name: 'Abir Rahman',
+      class: '10th (A)',
+      email: 'abir@example.com',
+      bio: 'গণিত ভালো লাগে, কোডিং শিখছি।'
+    };
+
+    // DOM Elements
+    const studentName = document.getElementById('studentName');
+    const studentClass = document.getElementById('studentClass');
+    const studentEmail = document.getElementById('studentEmail');
+    const studentBio = document.getElementById('studentBio');
+    const avatarInitial = document.getElementById('avatarInitial');
+
+    const profileModal = document.getElementById('profileModal');
+    const editProfileBtn = document.getElementById('editProfileBtn');
+    const cancelEdit = document.getElementById('cancelEdit');
+    const saveEdit = document.getElementById('saveEdit');
+
+    const editName = document.getElementById('editName');
+    const editClass = document.getElementById('editClass');
+    const editEmail = document.getElementById('editEmail');
+    const editBio = document.getElementById('editBio');
+
+    const addTaskBtn = document.getElementById('addTaskBtn');
+    const taskInput = document.getElementById('taskInput');
+    const taskCourse = document.getElementById('taskCourse');
+    const assignmentsList = document.getElementById('assignmentsList');
+
+    const contactForm = document.getElementById('contactForm');
+    const contactResult = document.getElementById('contactResult');
+
+    const clearDataBtn = document.getElementById('clearDataBtn');
+
+    // প্রোফাইল লোড / সেভ
+    function loadProfile(){
+      const raw = localStorage.getItem(LS_PROFILE);
+      const profile = raw ? JSON.parse(raw) : defaultProfile;
+      studentName.textContent = profile.name || 'Student Name';
+      studentClass.textContent = 'Class: ' + (profile.class || '---');
+      studentEmail.textContent = profile.email || '---';
+      studentBio.textContent = profile.bio || '---';
+      avatarInitial.textContent = (profile.name || 'S').trim().charAt(0).toUpperCase();
+      // ভ্যালু সেট মডালে
+      editName.value = profile.name || '';
+      editClass.value = profile.class || '';
+      editEmail.value = profile.email || '';
+      editBio.value = profile.bio || '';
+    }
+    function saveProfileFromModal(){
+      const profile = {
+        name: editName.value || 'Student',
+        class: editClass.value || '',
+        email: editEmail.value || '',
+        bio: editBio.value || ''
+      };
+      localStorage.setItem(LS_PROFILE, JSON.stringify(profile));
+      loadProfile();
+      closeModal();
+    }
+
+    // মডাল হ্যান্ডলার
+    function openModal(){ profileModal.style.display = 'flex'; }
+    function closeModal(){ profileModal.style.display = 'none'; }
+
+    editProfileBtn.addEventListener('click', openModal);
+    cancelEdit.addEventListener('click', closeModal);
+    saveEdit.addEventListener('click', saveProfileFromModal);
+
+    // টাস্ক (অ্যাসাইনমেন্ট) লজিক
+    function loadTasks(){
+      const raw = localStorage.getItem(LS_TASKS);
+      const tasks = raw ? JSON.parse(raw) : [];
+      renderTasks(tasks);
+    }
+    function saveTasks(tasks){
+      localStorage.setItem(LS_TASKS, JSON.stringify(tasks));
+    }
+    function renderTasks(tasks){
+      assignmentsList.innerHTML = '';
+      if(tasks.length === 0){
+        assignmentsList.innerHTML = '<div class="small">কোনো অ্যাসাইনমেন্ট নেই — নতুন যোগ করো।</div>';
+        return;
+      }
+      tasks.forEach((t, i) => {
+        const li = document.createElement('li');
+        li.className = 'assignment';
+        const left = document.createElement('div');
+        left.style.flex = '1';
+        const title = document.createElement('div');
+        title.textContent = t.title + ' — ' + t.course;
+        if(t.done) title.classList.add('done');
+        const meta = document.createElement('div');
+        meta.className = 'small';
+        meta.textContent = 'Added: ' + new Date(t.createdAt).toLocaleString();
+        left.appendChild(title);
+        left.appendChild(meta);
+
+        const right = document.createElement('div');
+        right.style.display = 'flex';
+        right.style.gap = '6px';
+        const toggleBtn = document.createElement('button');
+        toggleBtn.className = 'btn secondary';
+        toggleBtn.textContent = t.done ? 'Unmark' : 'Done';
+        toggleBtn.onclick = () => {
+          tasks[i].done = !tasks[i].done;
+          saveTasks(tasks);
+          renderTasks(tasks);
+        };
+        const delBtn = document.createElement('button');
+        delBtn.className = 'btn';
+        delBtn.textContent = 'Delete';
+        delBtn.onclick = () => {
+          if(confirm('এই অ্যাসাইনমেন্ট মুছে ফেলতে চাও?')) {
+            tasks.splice(i,1);
+            saveTasks(tasks);
+            renderTasks(tasks);
+          }
+        };
+        right.appendChild(toggleBtn);
+        right.appendChild(delBtn);
+
+        li.appendChild(left);
+        li.appendChild(right);
+        assignmentsList.appendChild(li);
+      });
+    }
+
+    addTaskBtn.addEventListener('click', () => {
+      const text = taskInput.value.trim();
+      const course = taskCourse.value;
+      if(!text){ alert('অ্যাসাইনমেন্ট লিখো আগে।'); return; }
+      const raw = localStorage.getItem(LS_TASKS);
+      const tasks = raw ? JSON.parse(raw) : [];
+      tasks.unshift({ title: text, course: course, done:false, createdAt: new Date().toISOString() });
+      saveTasks(tasks);
+      taskInput.value = '';
+      renderTasks(tasks);
+    });
+
+    // Contact form (ক্লায়েন্ট-সাইড প্রদর্শন)
+    contactForm.addEventListener('submit', (e) => {
+      e.preventDefault();
+      const name = document.getElementById('contactName').value.trim();
+      const email = document.getElementById('contactEmail').value.trim();
+      const msg = document.getElementById('contactMessage').value.trim();
+      if(!name || !email || !msg){ contactResult.textContent = 'সব ফিল্ড পূরণ করো।'; return; }
+      contactResult.textContent = `ধন্যবাদ ${name}! আপনার বার্তা গ্রহণ করা হলো (স্থানীয় প্রদর্শন)।`;
+      contactForm.reset();
+    });
+
+    // ক্লিয়ার ডাটা
+    clearDataBtn.addEventListener('click', () => {
+      if(confirm('LocalStorage থেকে সমস্ত ডাটা মুছে ফেলতে চাও? (প্রোফাইল ও টাস্ক মুছে যাবে)')) {
+        localStorage.removeItem(LS_PROFILE);
+        localStorage.removeItem(LS_TASKS);
+        loadProfile();
+        loadTasks();
+        alert('ডাটা মুছানো হলো।');
+      }
+    });
+
+    // ইনিশিয়াল লোড
+    loadProfile();
+    loadTasks();
+
+    // Escape দিয়ে মডাল বন্ধ করা
+    window.addEventListener('keydown', (e) => {
+      if(e.key === 'Escape') closeModal();
+    });
+
+  </script>
+</body>
+</html>
